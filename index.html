@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -54,7 +53,7 @@
 
   <div class="overlay" id="overlay"></div>
   <div class="popup" id="popup">
-    <pre id="popup-content"></pre>
+    <div id="popup-content"></div>
     <button onclick="closePopup()">Chiudi</button>
   </div>
 
@@ -154,16 +153,40 @@
 
     function apriPopup(index) {
       const carta = tutteLeCarte[index];
+      const content = document.getElementById('popup-content');
+      const numero = carta["N."];
+
+      if (numero) {
+        content.innerHTML = `
+          <img src="img/${numero}.jpg" alt="Carta" style="max-width:100%; border: 1px solid #000; border-radius: 8px;">
+          <br><button onclick="mostraDettagli(${index})">📄 Mostra dettagli testuali</button>
+        `;
+      } else {
+        content.innerHTML = `
+          <p>Immagine non disponibile.</p>
+          <button onclick="mostraDettagli(${index})">📄 Mostra dettagli testuali</button>
+        `;
+      }
+
+      document.getElementById('overlay').style.display = 'block';
+      document.getElementById('popup').style.display = 'block';
+    }
+
+    function mostraDettagli(index) {
+      const carta = tutteLeCarte[index];
       const dettagli = {};
+
       for (const chiave in carta) {
         if (carta[chiave] && carta[chiave].toString().trim() !== '') {
           dettagli[chiave] = carta[chiave];
         }
       }
+
       const content = document.getElementById('popup-content');
-      content.textContent = JSON.stringify(dettagli, null, 2);
-      document.getElementById('overlay').style.display = 'block';
-      document.getElementById('popup').style.display = 'block';
+      content.innerHTML = `
+        <pre>${JSON.stringify(dettagli, null, 2)}</pre>
+        <button onclick="apriPopup(${index})">🖼️ Torna all'immagine</button>
+      `;
     }
 
     function closePopup() {
@@ -184,3 +207,4 @@
   </script>
 </body>
 </html>
+
