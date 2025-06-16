@@ -67,6 +67,7 @@
 
   <script>
     let tutteLeCarte = [];
+    let cartaAttiva = null;
     let mazzo = {};
 
     fetch('cards.json')
@@ -157,38 +158,45 @@
     }
 
     function apriPopup(carta) {
+      cartaAttiva = carta; // Salva la carta cliccata
       const content = document.getElementById('popup-content');
       const numero = carta["N."];
-
+    
       if (numero) {
         content.innerHTML = `
           <img src="img/${numero}.jpg" alt="Carta" style="max-width:50%; display:block; margin:auto; border: 1px solid #000; border-radius: 8px;">
-          <br><button onclick='mostraDettagli(${JSON.stringify(carta)})'>📄 Mostra dettagli testuali</button>
+          <br><button id="btnDettagli">📄 Mostra dettagli testuali</button>
         `;
       } else {
         content.innerHTML = `
           <p>Immagine non disponibile.</p>
-          <button onclick='mostraDettagli(${JSON.stringify(carta)})'>📄 Mostra dettagli testuali</button>
+          <button id="btnDettagli">📄 Mostra dettagli testuali</button>
         `;
       }
-
+    
+      document.getElementById('btnDettagli').onclick = mostraDettagli;
       document.getElementById('overlay').style.display = 'block';
       document.getElementById('popup').style.display = 'block';
     }
 
-    function mostraDettagli(carta) {
+
+    function mostraDettagli() {
+      if (!cartaAttiva) return;
+    
       const dettagli = {};
-      for (const chiave in carta) {
-        if (carta[chiave] && carta[chiave].toString().trim() !== '') {
-          dettagli[chiave] = carta[chiave];
+      for (const chiave in cartaAttiva) {
+        if (cartaAttiva[chiave] && cartaAttiva[chiave].toString().trim() !== '') {
+          dettagli[chiave] = cartaAttiva[chiave];
         }
       }
-
+    
       const content = document.getElementById('popup-content');
       content.innerHTML = `
         <pre>${JSON.stringify(dettagli, null, 2)}</pre>
-        <button onclick='apriPopup(${JSON.stringify(carta)})'>🖼️ Torna all'immagine</button>
+        <button id="btnTornaImmagine">🖼️ Torna all'immagine</button>
       `;
+    
+      document.getElementById('btnTornaImmagine').onclick = () => apriPopup(cartaAttiva);
     }
 
     function closePopup() {
