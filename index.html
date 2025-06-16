@@ -118,9 +118,14 @@
         if (carta.EFFETTI) html += `<div><strong>Effetti:</strong> ${carta.EFFETTI}</div>`;
 
         html += `<button onclick="aggiungiAlMazzo('${carta["NOME CARTA"]}')">Aggiungi al mazzo</button>`;
-        html += `<button onclick='apriPopup(${JSON.stringify(carta)})'>Dettagli</button>`;
-
         div.innerHTML = html;
+
+        // Bottone dettagli: aggiunto correttamente con funzione anonima
+        const btnDettagli = document.createElement('button');
+        btnDettagli.textContent = 'Dettagli';
+        btnDettagli.onclick = () => apriPopup(carta);
+        div.appendChild(btnDettagli);
+
         container.appendChild(div);
       });
     }
